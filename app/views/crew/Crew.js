@@ -1,17 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import {
-	Text,
-	StyleSheet,
-	TextInput,
-	View,
-	Button,
-	Image,
-	ScrollView,
-	SafeAreaView,
-	FlatList,
-	TouchableOpacity,
-} from "react-native";
+import { Text, StyleSheet, View, Image, FlatList } from "react-native";
 
 const Crew = ({ route }) => {
 	const { showId } = route.params;
@@ -26,27 +15,26 @@ const Crew = ({ route }) => {
 	}, []);
 
 	return (
-		<ScrollView>
-			<View style={styles.container}>
-				<Text style={styles.text}>Crew</Text>
-				<FlatList
-					data={crew}
-					renderItem={({ item }) => (
-						<View style={styles.card}>
-							<Image
-								source={{
-									uri: item.person.image?.medium,
-									width: 150,
-									height: 150,
-								}}
-							/>
-							<Text style={styles.text}>{item.type}</Text>
-							<Text style={styles.text}>{item.person.name}</Text>
-						</View>
-					)}
-				/>
-			</View>
-		</ScrollView>
+		<View style={styles.container}>
+			<Text style={styles.text}>Crew</Text>
+			<FlatList
+				data={crew}
+				keyExtractor={(item) => `${item.person.id}-${item.type}`}
+				renderItem={({ item }) => (
+					<View style={styles.card}>
+						<Image
+							source={{
+								uri: item.person.image?.medium,
+								width: 150,
+								height: 150,
+							}}
+						/>
+						<Text style={styles.text}>{item.type}</Text>
+						<Text style={styles.text}>{item.person.name}</Text>
+					</View>
+				)}
+			/>
+		</View>
 	);
 };
 

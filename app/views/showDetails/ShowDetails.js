@@ -3,13 +3,12 @@ import React, { useEffect, useState } from "react";
 import {
 	Text,
 	StyleSheet,
-	TextInput,
 	View,
 	Button,
 	Image,
 	ScrollView,
 	FlatList,
-	TouchableOpacity,
+	SafeAreaView,
 } from "react-native";
 import PreviousEpisode from "../../components/PreviousEpisode/PreviousEpisode";
 import ShowInfoCard from "../../components/ShowInfoCard/ShowInfoCard";
@@ -17,6 +16,13 @@ import ShowInfoCard from "../../components/ShowInfoCard/ShowInfoCard";
 const ShowDetails = ({ route, navigation }) => {
 	const { name, image, summary, _links, id } = route.params.show;
 	const [images, setImages] = useState([]);
+	const [summaryWithoutHtml, setSummaryWithoutHtml] = useState("");
+
+	const stripHtml = (data) => {
+		const regex = /(<([^>]+)>)/gi;
+		const result = data.replace(regex, "");
+		setSummaryWithoutHtml(result);
+	};
 
 	useEffect(() => {
 		const fetchImages = async (id) => {
@@ -26,18 +32,21 @@ const ShowDetails = ({ route, navigation }) => {
 		};
 
 		fetchImages(id);
+		stripHtml(summary);
 	}, []);
 
 	return (
-		<ScrollView>
-			<View style={styles.container}>
-				<Text style={styles.text}>{name}</Text>
-				<Image
-					style={styles.image}
-					source={{ uri: image.medium, width: "90%", height: 400 }}
-				/>
+		<SafeAreaView style={styles.container}>
+			<ScrollView>
+				<Text style={styles.showName}>{name}</Text>
+				<View style={styles.imageAndSummaryContainer}>
+					<Image
+						style={styles.image}
+						source={{ uri: image.medium, width: 350, height: 250 }}
+					/>
+					<Text style={styles.summary}>{summaryWithoutHtml}</Text>
+				</View>
 				<ShowInfoCard info={route.params.show} />
-				<Text style={styles.text}>{summary}</Text>
 				<PreviousEpisode episode={_links.previousepisode.href} />
 				<Button
 					title="CAST"
@@ -51,31 +60,35 @@ const ShowDetails = ({ route, navigation }) => {
 					title="CREW"
 					onPress={() => navigation.navigate("Crew", { showId: id })}
 				/>
-				<FlatList
-					data={images}
-					renderItem={({ item }) => (
-						<View>
-							<Image
-								source={{
-									uri: item.resolutions.medium
-										? item.resolutions.medium.url
-										: item.resolutions.original.url,
-									width: 100,
-									height: 100,
-								}}
-							/>
-						</View>
-					)}
-				/>
-			</View>
-		</ScrollView>
+			</ScrollView>
+			{/* <FlatList
+				data={images}
+				keyExtractor={(item) => item.id.toString()}
+				renderItem={({ item }) => (
+					<View>
+						<Image
+							source={{
+								uri: item.resolutions.medium
+									? item.resolutions.medium.url
+									: item.resolutions.original.url,
+								width: 100,
+								height: 100,
+							}}
+						/>
+					</View>
+				)}
+			/> */}
+		</SafeAreaView>
 	);
 };
 
 const styles = StyleSheet.create({
+	imageAndSummaryContainer: {
+		// flexDirection: "row",
+	},
 	container: {
 		flex: 1,
-		backgroundColor: "#3f3f3f",
+		backgroundColor: "#000",
 		alignItems: "center",
 		// justifyContent: "center",
 	},
@@ -89,11 +102,25 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		color: "white",
-		// textTransform: "uppercase",
-		fontSize: 30,
+		fontSize: 20,
+	},
+	summary: {
+		color: "white",
+		fontSize: 20,
+		lineHeight: 30,
+		// paddingHorizontal: 10,
+		// textAlign: "justify",
 	},
 	image: {
 		borderRadius: 7,
+		resizeMode: "contain",
+	},
+	showName: {
+		fontWeight: "bold",
+		color: "white",
+		fontSize: 35,
+		textAlign: "center",
+		marginVertical: 20,
 	},
 });
 

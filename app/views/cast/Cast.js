@@ -1,16 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import {
-	Text,
-	StyleSheet,
-	TextInput,
-	View,
-	Button,
-	Image,
-	ScrollView,
-	FlatList,
-	TouchableOpacity,
-} from "react-native";
+import { Text, StyleSheet, View, Image, FlatList } from "react-native";
 
 const Cast = ({ route }) => {
 	const { showId } = route.params;
@@ -19,43 +9,41 @@ const Cast = ({ route }) => {
 	useEffect(() => {
 		const fetchCastData = async (id) => {
 			const result = await axios(`http://api.tvmaze.com/shows/${id}/cast`);
-			console.log(result.data[0]);
 			setCast(result.data);
 		};
 		fetchCastData(showId);
 	}, []);
 
 	return (
-		<ScrollView>
-			<View style={styles.container}>
-				<Text style={styles.text}>CAST</Text>
-				<FlatList
-					data={cast}
-					renderItem={({ item }) => {
-						return (
-							<View style={styles.card}>
-								<Image
-									source={{
-										uri: item?.character.image.medium,
-										width: 150,
-										height: 150,
-									}}
-								/>
-								<Text>{item?.person.name}</Text>
-								<Text>as {item?.character.name}</Text>
-							</View>
-						);
-					}}
-				/>
-			</View>
-		</ScrollView>
+		<View style={styles.container}>
+			<Text style={styles.text}>CAST</Text>
+			<FlatList
+				data={cast}
+				keyExtractor={(item) => item.person.id.toString()}
+				renderItem={({ item }) => {
+					return (
+						<View style={styles.card}>
+							<Image
+								source={{
+									uri: item?.character.image.medium,
+									width: 150,
+									height: 150,
+								}}
+							/>
+							<Text>{item?.person.name}</Text>
+							<Text>as {item?.character.name}</Text>
+						</View>
+					);
+				}}
+			/>
+		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		backgroundColor: "#3f3f3f",
+		// flex: 1,
+		backgroundColor: "#000",
 		alignItems: "center",
 		// justifyContent: "center",
 	},

@@ -1,16 +1,6 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import {
-	Text,
-	StyleSheet,
-	TextInput,
-	View,
-	Button,
-	Image,
-	ScrollView,
-	FlatList,
-	TouchableOpacity,
-} from "react-native";
+import axios from "axios";
+import { Text, StyleSheet, View, Image, FlatList } from "react-native";
 
 const Episodes = ({ route }) => {
 	const { showId } = route.params;
@@ -26,26 +16,25 @@ const Episodes = ({ route }) => {
 	}, []);
 
 	return (
-		<ScrollView>
-			<View style={styles.container}>
-				<Text style={styles.text}>EPISODE LIST</Text>
-				<FlatList
-					data={episodes}
-					renderItem={({ item }) => (
-						<View style={styles.card}>
-							<Text style={styles.text}>
-								{item.season}x{item.number}: {item.name}
-							</Text>
-							<Text>Airdate: {item.airdate}</Text>
-							<Image
-								source={{ uri: item?.image.medium, width: 200, height: 200 }}
-							/>
-							<Text>{item.summary}</Text>
-						</View>
-					)}
-				/>
-			</View>
-		</ScrollView>
+		<View style={styles.container}>
+			<Text style={styles.text}>EPISODE LIST</Text>
+			<FlatList
+				data={episodes}
+				keyExtractor={(item) => item.id.toString()}
+				renderItem={({ item }) => (
+					<View style={styles.card}>
+						<Text style={styles.text}>
+							{item.season}x{item.number}: {item.name}
+						</Text>
+						<Text>Airdate: {item.airdate}</Text>
+						<Image
+							source={{ uri: item?.image.medium, width: 200, height: 200 }}
+						/>
+						<Text>{item.summary}</Text>
+					</View>
+				)}
+			/>
+		</View>
 	);
 };
 
