@@ -1,6 +1,7 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Text, StyleSheet, View, Image, FlatList } from "react-native";
+import axios from "axios";
+import globalStyles from "../../../styles/globalStyles";
 
 const Crew = ({ route }) => {
 	const { showId } = route.params;
@@ -15,51 +16,62 @@ const Crew = ({ route }) => {
 	}, []);
 
 	return (
-		<View style={styles.container}>
-			<Text style={styles.text}>Crew</Text>
-			<FlatList
-				data={crew}
-				keyExtractor={(item) => `${item.person.id}-${item.type}`}
-				renderItem={({ item }) => (
-					<View style={styles.card}>
+		<FlatList
+			data={crew}
+			key={"+"}
+			style={globalStyles.extrasContainer}
+			numColumns={2}
+			keyExtractor={(item) => `${item.person.id}-${item.type}`}
+			renderItem={({ item }) => (
+				<View style={styles.card}>
+					<View style={styles.imageContainer}>
 						<Image
 							source={{
-								uri: item.person.image?.medium,
-								width: 150,
-								height: 150,
+								uri: item.person.image
+									? item.person.image.medium
+									: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png",
 							}}
+							style={styles.image}
 						/>
-						<Text style={styles.text}>{item.type}</Text>
-						<Text style={styles.text}>{item.person.name}</Text>
 					</View>
-				)}
-			/>
-		</View>
+					<View style={styles.textContainer}>
+						<Text style={styles.title}>{item.type}</Text>
+						<Text style={styles.crewName}>{item.person.name}</Text>
+					</View>
+				</View>
+			)}
+		/>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#3f3f3f",
-		alignItems: "center",
-		// justifyContent: "center",
-	},
 	card: {
-		backgroundColor: "#3e948b",
+		width: "48%",
+		backgroundColor: "#f7f7f7",
 		borderRadius: 5,
-		padding: 15,
+		marginRight: 20,
 		marginBottom: 20,
-		justifyContent: "center",
-		textAlign: "center",
 	},
-	text: {
-		color: "white",
-		// textTransform: "uppercase",
-		fontSize: 30,
+	imageContainer: {
+		width: "100%",
 	},
 	image: {
-		borderRadius: 7,
+		height: 200,
+		borderTopLeftRadius: 5,
+		borderTopRightRadius: 5,
+	},
+	textContainer: {
+		marginVertical: 5,
+		marginHorizontal: 5,
+		flex: 1,
+		justifyContent: "center",
+	},
+	title: {
+		fontWeight: "bold",
+		fontSize: 22,
+	},
+	crewName: {
+		fontSize: 17,
 	},
 });
 

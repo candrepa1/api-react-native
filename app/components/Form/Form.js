@@ -1,43 +1,44 @@
-import React from "react";
-import { Text, StyleSheet, TextInput, View, Button } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Formik } from "formik";
-import FlatButton from "../FlatButton/FlatButton";
 
-const Form = ({ setInput }) => {
+const Form = ({ setShowName, setActorName }) => {
+	const [input, setInput] = useState("");
 	return (
-		<Formik
-			initialValues={{ title: "" }}
-			onSubmit={(values) => {
-				setInput(values.title);
-			}}
-		>
-			{(formikProps) => (
-				<>
-					<View style={styles.searchContainer}>
-						<View style={styles.searchSection}>
-							<Ionicons
-								name="ios-search"
-								size={20}
-								color="grey"
-								style={styles.searchIcon}
-							/>
-							<TextInput
-								style={styles.input}
-								placeholder="Search"
-								onChangeText={formikProps.handleChange("title")}
-								value={formikProps.values.title}
-								placeholderTextColor="#ccc"
-							/>
-							<Ionicons name="ios-close-circle" size={22} color="grey" />
-						</View>
-
-						<FlatButton text="Search" onPress={formikProps.handleSubmit} />
+		<>
+			<View style={styles.searchContainer}>
+				<View style={styles.searchSection}>
+					<View style={styles.iconAndPlaceholder}>
+						<Ionicons
+							name="ios-search"
+							size={20}
+							color="grey"
+							style={styles.searchIcon}
+						/>
+						<TextInput
+							style={styles.input}
+							placeholder="Search"
+							placeholderTextColor="#ccc"
+							value={input}
+							onChangeText={setInput}
+							onSubmitEditing={() =>
+								setShowName ? setShowName(input) : setActorName(input)
+							}
+						/>
 					</View>
-					<View style={styles.hr} />
-				</>
-			)}
-		</Formik>
+					{input.length > 0 && (
+						<Ionicons
+							name="ios-close-circle"
+							size={24}
+							color="grey"
+							style={styles.clearAllIcon}
+							onPress={() => setInput("")}
+						/>
+					)}
+				</View>
+			</View>
+			<View style={styles.hr} />
+		</>
 	);
 };
 
@@ -45,22 +46,28 @@ const styles = StyleSheet.create({
 	searchContainer: {
 		width: "100%",
 	},
-	input: {
-		color: "#fff",
-		fontSize: 16,
-	},
 	searchSection: {
-		// flex: 1,
 		flexDirection: "row",
-		// justifyContent: "center",
 		alignItems: "center",
 		backgroundColor: "#15161B",
 		borderRadius: 8,
 		marginHorizontal: 17,
 		paddingVertical: 5,
+		justifyContent: "space-between",
+	},
+	iconAndPlaceholder: {
+		flexDirection: "row",
 	},
 	searchIcon: {
 		padding: 10,
+	},
+	input: {
+		color: "#fff",
+		fontSize: 16,
+		width: "80%",
+	},
+	clearAllIcon: {
+		marginRight: 10,
 	},
 	hr: {
 		borderBottomColor: "white",

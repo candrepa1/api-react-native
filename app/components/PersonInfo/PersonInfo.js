@@ -1,12 +1,5 @@
 import React from "react";
-import {
-	Text,
-	Image,
-	FlatList,
-	View,
-	SafeAreaView,
-	StyleSheet,
-} from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 
 const PersonInfo = ({ country, birthday }) => {
 	const calculateAge = (birthdate) => {
@@ -33,23 +26,24 @@ const PersonInfo = ({ country, birthday }) => {
 				Birthday:
 				<Text style={styles.normalText}> {birthday}</Text>
 			</Text>
-			<Text style={styles.boldText}>
-				Born in: <Text style={styles.normalText}>{country.name}</Text>
-			</Text>
+			{country && (
+				<Text style={styles.boldText}>
+					Born in: <Text style={styles.normalText}>{country.name}</Text>
+				</Text>
+			)}
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
-	title: {
-		fontSize: 30,
-	},
 	card: {
-		width: "90%",
 		backgroundColor: "#f7f7f7",
 		padding: 15,
-		margin: 20,
+		marginRight: 15,
 		borderRadius: 5,
+	},
+	title: {
+		fontSize: 29,
 	},
 	boldText: {
 		fontWeight: "bold",

@@ -10,7 +10,14 @@ import {
 
 const CardContent = ({ item, pressForShowDetails }) => {
 	return (
-		<TouchableOpacity onPress={() => pressForShowDetails(item)}>
+		<TouchableOpacity
+			onPress={() => pressForShowDetails(item)}
+			style={{
+				flexDirection: "row",
+				marginTop: 10,
+				flex: 1,
+			}}
+		>
 			<View style={styles.showCardContainer}>
 				{item.show.image && (
 					<Image
@@ -22,15 +29,17 @@ const CardContent = ({ item, pressForShowDetails }) => {
 						style={styles.image}
 					/>
 				)}
-				<View style={styles.cardText}>
-					<Text style={styles.showName}>{item.show.name}</Text>
-					{item.show?.genres.map((genre, index) => (
-						<Text key={index} style={styles.text}>
-							{genre}
-						</Text>
-					))}
+			</View>
+			<View style={styles.cardText}>
+				<Text style={styles.showName}>{item.show.name}</Text>
+				{item.show?.genres.map((genre, index) => (
+					<Text key={index} style={styles.text}>
+						{genre}
+					</Text>
+				))}
+				{item.show.rating.average && (
 					<Text style={styles.text}>Rating:{item.show.rating.average}</Text>
-				</View>
+				)}
 			</View>
 		</TouchableOpacity>
 	);
@@ -50,41 +59,33 @@ const Card = ({ shows, pressForShowDetails }) => {
 };
 
 const styles = StyleSheet.create({
-	cardContainer: {
-		// width: "100%",
-	},
 	showCardContainer: {
-		flexDirection: "row",
-		// backgroundColor: "#3e948b",
 		borderRadius: 7,
 		marginTop: 20,
-		paddingHorizontal: 17,
-		alignItems: "center",
-		// justifyContent: "center",
-		// textAlign: "center",
-	},
-	container: {
-		flex: 1,
-		backgroundColor: "#3f3f3f",
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	text: {
-		color: "white",
-		// textTransform: "uppercase",
-		fontSize: 17,
+		marginLeft: 17,
+		flex: 0.4,
 	},
 	image: {
 		borderRadius: 7,
 	},
 	cardText: {
 		marginLeft: 10,
-		alignItems: "flex-start",
+		flexDirection: "column",
+		flex: 0.5,
+		justifyContent: "center",
 	},
 	showName: {
 		fontWeight: "bold",
 		color: "white",
 		fontSize: 18,
+		flexWrap: "wrap",
+	},
+	text: {
+		color: "white",
+		fontSize: 17,
+	},
+	cardContainer: {
+		flex: 1,
 	},
 });
 

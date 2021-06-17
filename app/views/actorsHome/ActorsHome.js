@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import axios from "axios";
+
 import Form from "../../components/Form/Form";
 import ActorCard from "../../components/ActorCard/ActorCard";
 
 const ActorsHome = ({ navigation }) => {
-	const [input, setInput] = useState("");
+	const [actorName, setActorName] = useState("");
 	const [actors, setActors] = useState([]);
 
 	useEffect(() => {
@@ -16,15 +17,15 @@ const ActorsHome = ({ navigation }) => {
 			setActors(data);
 		};
 
-		fetchActorData(input);
-	}, [input]);
+		fetchActorData(actorName);
+	}, [actorName]);
 
 	const pressForActorDetails = (data) =>
 		navigation.navigate("ActorDetails", data);
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<Form setInput={setInput} showOrActor="an actor" />
+			<Form setActorName={setActorName} showOrActor="an actor" />
 			<ActorCard actors={actors} pressForActorDetails={pressForActorDetails} />
 		</SafeAreaView>
 	);
@@ -34,8 +35,6 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: "#000",
-		alignItems: "center",
-		// justifyContent: "center",
 	},
 });
 

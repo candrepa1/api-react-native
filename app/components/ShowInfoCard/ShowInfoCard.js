@@ -6,7 +6,7 @@ const ShowInfoCard = ({ info }) => {
 		<View style={styles.container}>
 			<Text style={styles.title}>Show Info</Text>
 			<Text style={styles.boldText}>
-				Network: <Text style={styles.regularText}>{info.network.name}</Text>
+				Network: <Text style={styles.regularText}>{info.network?.name}</Text>
 			</Text>
 			<Text style={styles.boldText}>
 				Schedule:{" "}
@@ -31,18 +31,22 @@ const ShowInfoCard = ({ info }) => {
 					))}
 				</Text>
 			</Text>
-			<Text style={styles.boldText}>
-				Official site:{" "}
-				<Text
-					style={styles.hyperlink}
-					onPress={() => Linking.openURL(info.officialSite)}
-				>
-					{info.officialSite}
+			{info.officialSite && (
+				<Text style={styles.boldText}>
+					Official site:{" "}
+					<Text
+						style={styles.hyperlink}
+						onPress={() => Linking.openURL(info.officialSite)}
+					>
+						{info.officialSite}
+					</Text>
 				</Text>
-			</Text>
-			<Text style={styles.boldText}>
-				Rating: <Text style={styles.regularText}>{info.rating.average}</Text>
-			</Text>
+			)}
+			{info.rating.average && (
+				<Text style={styles.boldText}>
+					Rating: <Text style={styles.regularText}>{info.rating.average}</Text>
+				</Text>
+			)}
 		</View>
 	);
 };
@@ -50,26 +54,28 @@ const ShowInfoCard = ({ info }) => {
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: "#f7f7f7",
-		// alignItems: "center",
 		padding: 15,
+		paddingLeft: 25,
 		margin: 20,
 		borderRadius: 5,
 	},
 	title: {
 		fontSize: 30,
 		marginVertical: 10,
+		textAlign: "center",
 	},
 	boldText: {
 		fontWeight: "bold",
 		fontSize: 18,
-		marginBottom: 5,
-	},
-	hyperlink: {
-		color: "blue",
+		marginBottom: 10,
 	},
 	regularText: {
 		fontWeight: "normal",
 		fontSize: 18,
+	},
+	hyperlink: {
+		fontWeight: "normal",
+		textDecorationLine: "underline",
 	},
 });
 

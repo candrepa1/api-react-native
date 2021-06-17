@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { Text, StyleSheet, View, Image } from "react-native";
-import { useState } from "react/cjs/react.development";
+import axios from "axios";
 
 const PreviousEpisode = ({ episode }) => {
 	const [episodeInfo, setEpisodeInfo] = useState("");
@@ -51,11 +50,17 @@ const PreviousEpisode = ({ episode }) => {
 			<Text style={styles.title}>Previous Episode</Text>
 			<View style={styles.secondContainer}>
 				<Image
-					source={{ uri: episodeInfo.image?.medium, width: 150, height: 150 }}
+					source={{
+						uri: episodeInfo.image
+							? episodeInfo.image.medium
+							: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png",
+					}}
+					style={styles.image}
 				/>
-				<View>
-					<Text style={styles.text}>{episodeInfo.name}</Text>
-					<Text style={styles.text}>
+
+				<View style={styles.episodeDescription}>
+					<Text style={styles.episodeTitle}>{episodeInfo.name}</Text>
+					<Text style={styles.description}>
 						Episode {episodeInfo.season}x{episodeInfo.number};{" "}
 						{formatDate(episodeInfo.airdate)}
 					</Text>
@@ -67,20 +72,50 @@ const PreviousEpisode = ({ episode }) => {
 };
 
 const styles = StyleSheet.create({
-	text: {
-		color: "white",
-		fontSize: 20,
-	},
 	container: {
-		marginVertical: 20,
-		marginHorizontal: 10,
+		marginVertical: 15,
+		marginHorizontal: 15,
+		flex: 1,
+		borderColor: "white",
+		borderWidth: 1,
+		borderRadius: 10,
+		padding: 10,
 	},
 	title: {
 		fontSize: 35,
 		color: "white",
+		marginBottom: 20,
+		textAlign: "center",
 	},
 	secondContainer: {
-		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	image: {
+		width: "90%",
+		height: 200,
+	},
+	episodeDescription: {
+		marginLeft: 10,
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+		marginVertical: 10,
+	},
+	episodeTitle: {
+		color: "white",
+		fontSize: 25,
+		fontWeight: "bold",
+	},
+	description: {
+		color: "white",
+		fontSize: 17,
+		marginBottom: 20,
+	},
+	text: {
+		color: "white",
+		fontSize: 20,
+		textAlign: "center",
 	},
 });
 

@@ -12,16 +12,37 @@ import ActorDetails from "../app/views/actorDetails/ActorDetails";
 const { Navigator, Screen } = createStackNavigator();
 
 const HomeNavigator = () => (
-	<Navigator headerMode="float">
-		{/* //other options: "float", "screen", "none" */}
+	<Navigator
+		mode="modal"
+		headerMode="float"
+		screenOptions={{
+			headerStyle: {
+				backgroundColor: "#000",
+			},
+			headerTitleStyle: {
+				fontWeight: "bold",
+				fontSize: 20,
+			},
+			headerTintColor: "tomato",
+			headerBackTitleVisible: false,
+		}}
+	>
 		<Screen name="ShowHome" component={HomeTabNavigator} />
-		<Screen name="ShowDetails" component={ShowDetails} />
+		<Screen
+			name="ShowDetails"
+			component={ShowDetails}
+			options={({ route }) => ({ title: route.params.show.name })}
+		/>
 		<Screen name="Cast" component={Cast} />
 		<Screen name="Episodes" component={Episodes} />
 		<Screen name="Crew" component={Crew} />
 
 		<Screen name="ActorHome" component={ActorsHome} />
-		<Screen name="ActorDetails" component={ActorDetails} />
+		<Screen
+			name="ActorDetails"
+			component={ActorDetails}
+			options={({ route }) => ({ title: route.params.person.name })}
+		/>
 	</Navigator>
 );
 

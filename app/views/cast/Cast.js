@@ -1,6 +1,7 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Text, StyleSheet, View, Image, FlatList } from "react-native";
+import axios from "axios";
+import globalStyles from "../../../styles/globalStyles";
 
 const Cast = ({ route }) => {
 	const { showId } = route.params;
@@ -15,49 +16,64 @@ const Cast = ({ route }) => {
 	}, []);
 
 	return (
-		<View style={styles.container}>
-			<Text style={styles.text}>CAST</Text>
-			<FlatList
-				data={cast}
-				keyExtractor={(item) => item.person.id.toString()}
-				renderItem={({ item }) => {
-					return (
-						<View style={styles.card}>
+		<FlatList
+			data={cast}
+			style={globalStyles.extrasContainer}
+			key={"_"}
+			numColumns={2}
+			keyExtractor={(item) => item.person.id.toString()}
+			renderItem={({ item }) => {
+				return (
+					<View style={styles.card}>
+						<View style={styles.imageContainer}>
 							<Image
 								source={{
 									uri: item?.character.image.medium,
-									width: 150,
-									height: 150,
 								}}
+								style={styles.image}
 							/>
-							<Text>{item?.person.name}</Text>
-							<Text>as {item?.character.name}</Text>
 						</View>
-					);
-				}}
-			/>
-		</View>
+						<View style={styles.textContainer}>
+							<Text style={styles.actorName}>{item?.person.name}</Text>
+							<Text style={styles.characterName}>
+								as {item?.character.name}
+							</Text>
+						</View>
+					</View>
+				);
+			}}
+		/>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		// flex: 1,
-		backgroundColor: "#000",
-		alignItems: "center",
-		// justifyContent: "center",
-	},
 	card: {
-		backgroundColor: "#3e948b",
+		width: "48%",
+		backgroundColor: "#f7f7f7",
 		borderRadius: 5,
-		padding: 15,
+		marginRight: 20,
 		marginBottom: 20,
-		justifyContent: "center",
-		textAlign: "center",
 	},
-	text: {
-		color: "white",
-		fontSize: 30,
+	imageContainer: {
+		width: "100%",
+	},
+	image: {
+		height: 200,
+		borderTopLeftRadius: 5,
+		borderTopRightRadius: 5,
+	},
+	textContainer: {
+		marginVertical: 5,
+		marginHorizontal: 5,
+		flex: 1,
+		justifyContent: "center",
+	},
+	actorName: {
+		fontWeight: "bold",
+		fontSize: 22,
+	},
+	characterName: {
+		fontSize: 17,
 	},
 });
 
