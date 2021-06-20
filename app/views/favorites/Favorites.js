@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
 	SafeAreaView,
 	Text,
@@ -26,11 +26,11 @@ const Favorites = () => {
 
 	const removeFavorite = async (id) => {
 		try {
-			const newFavorites = favorites.filter((item) => item.id !== id);
+			const newFavorites = favorites.filter((fav) => fav.id !== id);
 			const jsonValue = JSON.stringify(newFavorites);
 			await AsyncStorage.setItem("favorites", jsonValue);
 		} catch (e) {
-			// saving error
+			console.log(e);
 		}
 	};
 
@@ -41,9 +41,10 @@ const Favorites = () => {
 		}, [favorites])
 	);
 
+	useEffect(() => {}, []);
+
 	return (
 		<SafeAreaView style={styles.container}>
-			<Text style={styles.title}>Your favorites:</Text>
 			<FlatList
 				data={favorites}
 				numColumns={2}
@@ -51,10 +52,7 @@ const Favorites = () => {
 				keyExtractor={(item) => item.id.toString()}
 				renderItem={({ item }) => (
 					<View style={styles.favoriteContainer}>
-						<Image
-							source={{ uri: item.image?.medium, height: 200 }}
-							style={styles.image}
-						/>
+						<Image source={{ uri: item.image?.medium }} style={styles.image} />
 						<View style={styles.buttonContainer}>
 							<RemoveButton removeFavorite={removeFavorite} id={item.id} />
 							<Text style={styles.name}>{item.name}</Text>
@@ -74,11 +72,6 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		paddingHorizontal: 15,
 	},
-	title: {
-		color: "white",
-		fontSize: 35,
-		marginVertical: 10,
-	},
 	favoriteContainer: {
 		borderRadius: 10,
 		marginTop: 20,
@@ -90,6 +83,7 @@ const styles = StyleSheet.create({
 		borderTopLeftRadius: 8,
 		borderTopRightRadius: 8,
 		width: "100%",
+		height: 200,
 	},
 	text: {
 		textAlign: "center",

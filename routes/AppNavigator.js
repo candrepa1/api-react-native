@@ -8,43 +8,82 @@ import Crew from "../app/views/crew/Crew";
 import { HomeTabNavigator } from "./TabNavigator";
 import ActorsHome from "../app/views/actorsHome/ActorsHome";
 import ActorDetails from "../app/views/actorDetails/ActorDetails";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import useShowData from "../hooks/useShowData";
+import { useContext } from "react";
+import { ShowContext } from "../context/ShowContext";
+import { ActorContext } from "../context/ActorContext";
 
 const { Navigator, Screen } = createStackNavigator();
 
-const HomeNavigator = () => (
-	<Navigator
-		mode="modal"
-		headerMode="float"
-		screenOptions={{
-			headerStyle: {
-				backgroundColor: "#000",
-			},
-			headerTitleStyle: {
-				fontWeight: "bold",
-				fontSize: 20,
-			},
-			headerTintColor: "tomato",
-			headerBackTitleVisible: false,
-		}}
-	>
-		<Screen name="ShowHome" component={HomeTabNavigator} />
-		<Screen
-			name="ShowDetails"
-			component={ShowDetails}
-			options={({ route }) => ({ title: route.params.show.name })}
-		/>
-		<Screen name="Cast" component={Cast} />
-		<Screen name="Episodes" component={Episodes} />
-		<Screen name="Crew" component={Crew} />
+function getHeaderTitle(route) {
+	const routeName = getFocusedRouteNameFromRoute(route) ?? "ShowHome";
 
-		<Screen name="ActorHome" component={ActorsHome} />
-		<Screen
-			name="ActorDetails"
-			component={ActorDetails}
-			options={({ route }) => ({ title: route.params.person.name })}
-		/>
-	</Navigator>
-);
+	switch (routeName) {
+		case "Shows":
+			return "Shows";
+		case "Actors":
+			return "Actors";
+		case "Favorites":
+			return "Favorites";
+	}
+}
+
+const HomeNavigator = () => {
+	const { showSelected } = useContext(ShowContext);
+	const { actorSelected } = useContext(ActorContext);
+
+	return (
+		<Navigator
+			mode="modal"
+			headerMode="float"
+			screenOptions={{
+				headerStyle: {
+					backgroundColor: "#000",
+				},
+				headerTitleStyle: {
+					fontWeight: "bold",
+					fontSize: 20,
+				},
+				headerTintColor: "tomato",
+				headerBackTitleVisible: false,
+				title: "Shows",
+			}}
+		>
+			<Screen
+				name="ShowHome"
+				component={HomeTabNavigator}
+				options={({ route }) => ({ headerTitle: getHeaderTitle(route) })}
+			/>
+			<Screen
+				name="ShowDetails"
+				component={ShowDetails}
+				options={() => ({ headerTitle: showSelected.name })}
+			/>
+			<Screen
+				name="Cast"
+				component={Cast}
+				options={() => ({ headerTitle: "Cast" })}
+			/>
+			<Screen
+				name="Episodes"
+				component={Episodes}
+				options={() => ({ headerTitle: "Episodes" })}
+			/>
+			<Screen
+				name="Crew"
+				component={Crew}
+				options={() => ({ headerTitle: "Crew" })}
+			/>
+
+			<Screen
+				name="ActorDetails"
+				component={ActorDetails}
+				options={() => ({ headerTitle: actorSelected.name })}
+			/>
+		</Navigator>
+	);
+};
 
 export const AppNavigator = () => (
 	<NavigationContainer>

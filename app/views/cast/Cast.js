@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { Text, StyleSheet, View, Image, FlatList } from "react-native";
+import React, { useEffect, useState, useContext } from "react";
+import { Text, View, Image, FlatList } from "react-native";
 import axios from "axios";
 import globalStyles from "../../../styles/globalStyles";
+import { ShowContext } from "../../../context/ShowContext";
 
-const Cast = ({ route }) => {
-	const { showId } = route.params;
+const Cast = () => {
 	const [cast, setCast] = useState([]);
 
+	const { showSelected } = useContext(ShowContext);
+
+	const fetchCastData = async (id) => {
+		const result = await axios(`http://api.tvmaze.com/shows/${id}/cast`);
+		setCast(result.data);
+	};
+
 	useEffect(() => {
-		const fetchCastData = async (id) => {
-			const result = await axios(`http://api.tvmaze.com/shows/${id}/cast`);
-			setCast(result.data);
-		};
-		fetchCastData(showId);
+		fetchCastData(showSelected.id);
 	}, []);
 
 	return (
@@ -24,18 +27,18 @@ const Cast = ({ route }) => {
 			keyExtractor={(item) => item.person.id.toString()}
 			renderItem={({ item }) => {
 				return (
-					<View style={styles.card}>
-						<View style={styles.imageContainer}>
+					<View style={globalStyles.card}>
+						<View style={globalStyles.imageContainer}>
 							<Image
 								source={{
 									uri: item?.character.image.medium,
 								}}
-								style={styles.image}
+								style={globalStyles.image}
 							/>
 						</View>
-						<View style={styles.textContainer}>
-							<Text style={styles.actorName}>{item?.person.name}</Text>
-							<Text style={styles.characterName}>
+						<View style={globalStyles.textContainer}>
+							<Text style={globalStyles.castCrewName}>{item?.person.name}</Text>
+							<Text style={globalStyles.characterCrewName}>
 								as {item?.character.name}
 							</Text>
 						</View>
@@ -45,36 +48,5 @@ const Cast = ({ route }) => {
 		/>
 	);
 };
-
-const styles = StyleSheet.create({
-	card: {
-		width: "48%",
-		backgroundColor: "#f7f7f7",
-		borderRadius: 5,
-		marginRight: 20,
-		marginBottom: 20,
-	},
-	imageContainer: {
-		width: "100%",
-	},
-	image: {
-		height: 200,
-		borderTopLeftRadius: 5,
-		borderTopRightRadius: 5,
-	},
-	textContainer: {
-		marginVertical: 5,
-		marginHorizontal: 5,
-		flex: 1,
-		justifyContent: "center",
-	},
-	actorName: {
-		fontWeight: "bold",
-		fontSize: 22,
-	},
-	characterName: {
-		fontSize: 17,
-	},
-});
 
 export default Cast;

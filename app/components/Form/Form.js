@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { ShowContext } from "../../../context/ShowContext";
+import { ActorContext } from "../../../context/ActorContext";
 
-const Form = ({ setShowName, setActorName }) => {
+const Form = ({ name }) => {
 	const [input, setInput] = useState("");
+
+	const { fetchShowData } = useContext(ShowContext);
+	const { fetchActorData } = useContext(ActorContext);
+
 	return (
 		<>
 			<View style={styles.searchContainer}>
@@ -17,12 +23,12 @@ const Form = ({ setShowName, setActorName }) => {
 						/>
 						<TextInput
 							style={styles.input}
-							placeholder="Search"
+							placeholder={`Search by ${name} name`}
 							placeholderTextColor="#ccc"
 							value={input}
 							onChangeText={setInput}
 							onSubmitEditing={() =>
-								setShowName ? setShowName(input) : setActorName(input)
+								name === "show" ? fetchShowData(input) : fetchActorData(input)
 							}
 						/>
 					</View>
@@ -45,6 +51,7 @@ const Form = ({ setShowName, setActorName }) => {
 const styles = StyleSheet.create({
 	searchContainer: {
 		width: "100%",
+		marginVertical: 15,
 	},
 	searchSection: {
 		flexDirection: "row",
@@ -72,7 +79,6 @@ const styles = StyleSheet.create({
 	hr: {
 		borderBottomColor: "white",
 		borderBottomWidth: 0.3,
-		marginVertical: 10,
 		width: "100%",
 	},
 });

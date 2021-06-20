@@ -1,41 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, SafeAreaView } from "react-native";
-import axios from "axios";
+import React, { useContext } from "react";
+import { SafeAreaView } from "react-native";
 
 import Form from "../../components/Form/Form";
-import Card from "../../components/Card/Card";
+import { ShowContext } from "../../../context/ShowContext";
+import ShowCard from "../../components/ShowCard/ShowCard";
+import globalStyles from "../../../styles/globalStyles";
 
 const ShowHome = ({ navigation }) => {
-	const [showName, setShowName] = useState("");
-	const [arrayOfShows, setArrayOfShows] = useState([]);
+	const { setShowSelected } = useContext(ShowContext);
 
-	useEffect(() => {
-		const fetchShowData = async (show) => {
-			const { data } = await axios(
-				`http://api.tvmaze.com/search/shows?q=${show}`
-			);
-			setArrayOfShows(data);
-		};
-
-		fetchShowData(showName);
-	}, [showName]);
-
-	const pressForShowDetails = (data) =>
-		navigation.navigate("ShowDetails", data);
+	const pressForShowDetails = (show) => {
+		setShowSelected(show);
+		navigation.navigate("ShowDetails");
+	};
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<Form setShowName={setShowName} />
-			<Card shows={arrayOfShows} pressForShowDetails={pressForShowDetails} />
+		<SafeAreaView style={globalStyles.container}>
+			<Form name="show" />
+			<ShowCard pressForShowDetails={pressForShowDetails} />
 		</SafeAreaView>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#000",
-	},
-});
 
 export default ShowHome;

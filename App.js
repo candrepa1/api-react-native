@@ -1,11 +1,14 @@
 import React from "react";
-import { TouchableWithoutFeedback, Keyboard } from "react-native";
+import { ActorProvider } from "./context/ActorContext";
+import { ShowProvider } from "./context/ShowContext";
 import { AppNavigator } from "./routes/AppNavigator";
 
 export default function App() {
 	return (
-		<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-			<AppNavigator />
-		</TouchableWithoutFeedback>
+		<ShowProvider>
+			<ActorProvider>
+				<AppNavigator />
+			</ActorProvider>
+		</ShowProvider>
 	);
 }

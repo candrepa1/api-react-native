@@ -1,41 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { SafeAreaView, StyleSheet } from "react-native";
-import axios from "axios";
+import React, { useContext } from "react";
+import { SafeAreaView } from "react-native";
 
 import Form from "../../components/Form/Form";
 import ActorCard from "../../components/ActorCard/ActorCard";
+import { ActorContext } from "../../../context/ActorContext";
+import globalStyles from "../../../styles/globalStyles";
 
 const ActorsHome = ({ navigation }) => {
-	const [actorName, setActorName] = useState("");
-	const [actors, setActors] = useState([]);
+	const { setActorSelected } = useContext(ActorContext);
 
-	useEffect(() => {
-		const fetchActorData = async (actor) => {
-			const { data } = await axios(
-				`http://api.tvmaze.com/search/people?q=${actor}`
-			);
-			setActors(data);
-		};
-
-		fetchActorData(actorName);
-	}, [actorName]);
-
-	const pressForActorDetails = (data) =>
-		navigation.navigate("ActorDetails", data);
+	const pressForActorDetails = (actor) => {
+		setActorSelected(actor);
+		navigation.navigate("ActorDetails");
+	};
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<Form setActorName={setActorName} showOrActor="an actor" />
-			<ActorCard actors={actors} pressForActorDetails={pressForActorDetails} />
+		<SafeAreaView style={globalStyles.container}>
+			<Form name="actor" />
+			<ActorCard pressForActorDetails={pressForActorDetails} />
 		</SafeAreaView>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#000",
-	},
-});
 
 export default ActorsHome;

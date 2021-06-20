@@ -1,114 +1,57 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import {
 	Text,
 	StyleSheet,
 	View,
-	Button,
 	Image,
 	ScrollView,
-	FlatList,
 	SafeAreaView,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import PreviousEpisode from "../../components/PreviousEpisode/PreviousEpisode";
 import ShowInfoCard from "../../components/ShowInfoCard/ShowInfoCard";
 import AddToFavoritesButton from "../../components/AddToFavoritesButton/AddToFavoritesButton";
 import FlatButton from "../../components/FlatButton/FlatButton";
+import { ShowContext } from "../../../context/ShowContext";
+import globalStyles from "../../../styles/globalStyles";
+import useUtilFunctions from "../../../hooks/useUtilFunctions";
 
-const ShowDetails = ({ route, navigation }) => {
-	const { image, summary, _links, id, rating } = route.params.show;
-	const [summaryWithoutHtml, setSummaryWithoutHtml] = useState("");
-	const [stars, setStars] = useState([]);
-
-	const stripHtml = (data) => {
-		const regex = /(<([^>]+)>)/gi;
-		const result = data.replace(regex, "");
-		setSummaryWithoutHtml(result);
-	};
-
-	const getValue = async () => {
-		try {
-			let currentFavorites = "";
-			const jsonValue = await AsyncStorage.getItem("favorites");
-			jsonValue != null ? (currentFavorites = JSON.parse(jsonValue)) : null;
-			return currentFavorites;
-		} catch (e) {
-			console.log(e);
-		}
-	};
-
-	const addToFavorites = async (data) => {
-		try {
-			const arrayOfFavorites = await getValue();
-			if (!arrayOfFavorites.find((item) => item.id === data.id)) {
-				arrayOfFavorites.push(data);
-			}
-			const jsonValue = JSON.stringify(arrayOfFavorites);
-			await AsyncStorage.setItem("favorites", jsonValue);
-		} catch (e) {
-			console.log(e);
-		}
-	};
-
-	const starReviews = (limit) => {
-		let starsEl = "";
-		for (let i = 0; i < limit; i++) {
-			starsEl += <Ionicons name="ios-star-sharp" size={24} color="white" />;
-		}
-		setStars(starsEl);
-	};
-
-	useEffect(() => {
-		stripHtml(summary);
-		// starReviews(rating.average);
-	}, []);
+const ShowDetails = ({ navigation }) => {
+	const { showSelected } = useContext(ShowContext);
+	const { stripHtml } = useUtilFunctions();
 
 	return (
-		<SafeAreaView style={styles.container}>
+		<SafeAreaView style={globalStyles.container}>
 			<ScrollView>
 				<View style={styles.imageAndButtonsContainer}>
 					<Image
 						style={styles.image}
-						source={{ uri: image.medium, height: 250 }}
+						source={{ uri: showSelected.image.medium }}
 					/>
 					<View style={styles.buttonsContainer}>
-						<AddToFavoritesButton
-							addToFavorites={addToFavorites}
-							show={route.params.show}
-						/>
+						<AddToFavoritesButton item={showSelected} />
 						<FlatButton
 							text="Cast"
-							onPress={() => navigation.navigate("Cast", { showId: id })}
+							onPress={() => navigation.navigate("Cast")}
 						/>
 						<FlatButton
 							text="Crew"
-							onPress={() => navigation.navigate("Crew", { showId: id })}
+							onPress={() => navigation.navigate("Crew")}
 						/>
 						<FlatButton
 							text="Episodes"
-							onPress={() => navigation.navigate("Episodes", { showId: id })}
+							onPress={() => navigation.navigate("Episodes")}
 						/>
-						{/* <FlatList
-							data={stars}
-							renderItem={({ item }) => <Text style={styles.text}>{item}</Text>}
-						/> */}
 					</View>
 				</View>
-				<Text style={styles.summary}>{summaryWithoutHtml}</Text>
-				<ShowInfoCard info={route.params.show} />
-				<PreviousEpisode episode={_links.previousepisode.href} />
+				<Text style={styles.summary}>{stripHtml(showSelected.summary)}</Text>
+				<ShowInfoCard />
+				<PreviousEpisode />
 			</ScrollView>
 		</SafeAreaView>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#000",
-	},
 	imageAndButtonsContainer: {
 		flexDirection: "row",
 		alignItems: "center",
@@ -118,6 +61,7 @@ const styles = StyleSheet.create({
 		borderRadius: 7,
 		resizeMode: "contain",
 		width: "60%",
+		height: 250,
 	},
 	buttonsContainer: {
 		width: "100%",

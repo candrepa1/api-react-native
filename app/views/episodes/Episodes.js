@@ -1,49 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Text, StyleSheet, View, Image, FlatList } from "react-native";
 import axios from "axios";
+import { ShowContext } from "../../../context/ShowContext";
+import useUtilFunctions from "../../../hooks/useUtilFunctions";
 
-const Episodes = ({ route }) => {
-	const { showId } = route.params;
+const Episodes = () => {
 	const [episodes, setEpisodes] = useState([]);
 
-	const stripHtml = (data) => {
-		if (data) {
-			const regex = /(<([^>]+)>)/gi;
-			const result = data.replace(regex, "");
-			return result;
-		}
-	};
+	const { showSelected } = useContext(ShowContext);
+	const { stripHtml, formatDate } = useUtilFunctions();
 
-	const formatDate = (date) => {
-		const months = [
-			"Jan",
-			"Feb",
-			"Mar",
-			"Apr",
-			"May",
-			"Jun",
-			"Jul",
-			"Aug",
-			"Sept",
-			"Oct",
-			"Nov",
-			"Dec",
-		];
-		if (date) {
-			const splitted = date.split("-");
-			const newDate = `${months[splitted[1] - 1]} ${splitted[2]}, ${
-				splitted[0]
-			}`;
-			return newDate;
-		}
+	const fetchEpisodeData = async (id) => {
+		const result = await axios(`http://api.tvmaze.com/shows/${id}/episodes`);
+		setEpisodes(result.data);
 	};
 
 	useEffect(() => {
-		const fetchEpisodeData = async (id) => {
-			const result = await axios(`http://api.tvmaze.com/shows/${id}/episodes`);
-			setEpisodes(result.data);
-		};
-		fetchEpisodeData(showId);
+		fetchEpisodeData(showSelected.id);
 	}, []);
 
 	return (

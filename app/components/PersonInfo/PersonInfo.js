@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Text, View, StyleSheet } from "react-native";
+import { ActorContext } from "../../../context/ActorContext";
 
-const PersonInfo = ({ country, birthday }) => {
+const PersonInfo = () => {
+	const { actorSelected } = useContext(ActorContext);
+
 	const calculateAge = (birthdate) => {
 		const currentDate = new Date();
 		const birthDate = new Date(birthdate);
@@ -20,15 +23,19 @@ const PersonInfo = ({ country, birthday }) => {
 		<View style={styles.card}>
 			<Text style={styles.title}>Person Info</Text>
 			<Text style={styles.boldText}>
-				Age: <Text style={styles.normalText}>{calculateAge(birthday)}</Text>
+				Age:{" "}
+				<Text style={styles.normalText}>
+					{calculateAge(actorSelected.birthday)}
+				</Text>
 			</Text>
 			<Text style={styles.boldText}>
 				Birthday:
-				<Text style={styles.normalText}> {birthday}</Text>
+				<Text style={styles.normalText}> {actorSelected.birthday}</Text>
 			</Text>
-			{country && (
+			{actorSelected.country && (
 				<Text style={styles.boldText}>
-					Born in: <Text style={styles.normalText}>{country.name}</Text>
+					Born in:{" "}
+					<Text style={styles.normalText}>{actorSelected.country.name}</Text>
 				</Text>
 			)}
 		</View>

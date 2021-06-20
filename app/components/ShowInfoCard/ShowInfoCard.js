@@ -1,50 +1,55 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Text, StyleSheet, View, Linking } from "react-native";
+import { ShowContext } from "../../../context/ShowContext";
 
 const ShowInfoCard = ({ info }) => {
+	const { showSelected } = useContext(ShowContext);
+
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>Show Info</Text>
 			<Text style={styles.boldText}>
-				Network: <Text style={styles.regularText}>{info.network?.name}</Text>
+				Network:{" "}
+				<Text style={styles.regularText}>{showSelected.network?.name}</Text>
 			</Text>
 			<Text style={styles.boldText}>
 				Schedule:{" "}
 				<Text style={styles.regularText}>
-					{info.schedule?.days.map((day, index) => (
+					{showSelected.schedule?.days.map((day, index) => (
 						<Text key={index}>{day}s</Text>
 					))}{" "}
-					at {info.schedule?.time} ({info.runtime} min)
+					at {showSelected.schedule?.time} ({showSelected.runtime} min)
 				</Text>
 			</Text>
 			<Text style={styles.boldText}>
-				Status: <Text style={styles.regularText}>{info.status}</Text>
+				Status: <Text style={styles.regularText}>{showSelected.status}</Text>
 			</Text>
 			<Text style={styles.boldText}>
-				Show Type: <Text style={styles.regularText}>{info.type}</Text>
+				Show Type: <Text style={styles.regularText}>{showSelected.type}</Text>
 			</Text>
 			<Text style={styles.boldText}>
 				Genres:{" "}
 				<Text style={styles.regularText}>
-					{info?.genres.map((genre, index) => (
+					{showSelected?.genres.map((genre, index) => (
 						<Text key={index}>{genre} | </Text>
 					))}
 				</Text>
 			</Text>
-			{info.officialSite && (
+			{showSelected.officialSite && (
 				<Text style={styles.boldText}>
 					Official site:{" "}
 					<Text
 						style={styles.hyperlink}
-						onPress={() => Linking.openURL(info.officialSite)}
+						onPress={() => Linking.openURL(showSelected.officialSite)}
 					>
-						{info.officialSite}
+						{showSelected.officialSite}
 					</Text>
 				</Text>
 			)}
-			{info.rating.average && (
+			{showSelected.rating.average && (
 				<Text style={styles.boldText}>
-					Rating: <Text style={styles.regularText}>{info.rating.average}</Text>
+					Rating:{" "}
+					<Text style={styles.regularText}>{showSelected.rating.average}</Text>
 				</Text>
 			)}
 		</View>

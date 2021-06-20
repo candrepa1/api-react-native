@@ -1,48 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Text, StyleSheet, View, Image } from "react-native";
 import axios from "axios";
+import { ShowContext } from "../../../context/ShowContext";
+import useUtilFunctions from "../../../hooks/useUtilFunctions";
 
 const PreviousEpisode = ({ episode }) => {
 	const [episodeInfo, setEpisodeInfo] = useState("");
 
-	const formatDate = (date) => {
-		const months = [
-			"Jan",
-			"Feb",
-			"Mar",
-			"Apr",
-			"May",
-			"Jun",
-			"Jul",
-			"Aug",
-			"Sept",
-			"Oct",
-			"Nov",
-			"Dec",
-		];
-		if (date) {
-			const splitted = date.split("-");
-			const newDate = `${months[splitted[1] - 1]} ${splitted[2]}, ${
-				splitted[0]
-			}`;
-			return newDate;
-		}
-	};
+	const { showSelected } = useContext(ShowContext);
+	const { stripHtml, formatDate } = useUtilFunctions();
 
-	const stripHtml = (data) => {
-		if (data) {
-			const regex = /(<([^>]+)>)/gi;
-			const result = data.replace(regex, "");
-			return result;
-		}
+	const fetchEpisodeData = async (episode) => {
+		const result = await axios(episode);
+		setEpisodeInfo(result.data);
 	};
 
 	useEffect(() => {
-		const fetchEpisodeData = async (episode) => {
-			const result = await axios(episode);
-			setEpisodeInfo(result.data);
-		};
-		fetchEpisodeData(episode);
+		fetchEpisodeData(showSelected._links.previousepisode.href);
 	}, []);
 
 	return (
