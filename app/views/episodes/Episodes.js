@@ -1,40 +1,43 @@
-import React, { useEffect, useState, useContext } from "react";
+import React from "react";
 import { Text, StyleSheet, View, Image, FlatList } from "react-native";
-import axios from "axios";
-import { ShowContext } from "../../../context/ShowContext";
+import { useSelector } from "react-redux";
 import useUtilFunctions from "../../../hooks/useUtilFunctions";
+import globalStyles from "../../../styles/globalStyles";
 
 const Episodes = () => {
-	const [episodes, setEpisodes] = useState([]);
-
-	const { showSelected } = useContext(ShowContext);
 	const { stripHtml, formatDate } = useUtilFunctions();
-
-	const fetchEpisodeData = async (id) => {
-		const result = await axios(`http://api.tvmaze.com/shows/${id}/episodes`);
-		setEpisodes(result.data);
-	};
-
-	useEffect(() => {
-		fetchEpisodeData(showSelected.id);
-	}, []);
+	const episodes = useSelector((state) => state.show.episodes.data);
+	const error = useSelector((state) => state.show.episodes.error);
 
 	return (
-		<FlatList
-			data={episodes}
-			style={styles.container}
-			keyExtractor={(item) => item.id.toString()}
-			renderItem={({ item }) => (
-				<View style={styles.card}>
-					<Text style={styles.episodeTitle}>
-						{item.season}x{item.number}: {item.name}
-					</Text>
-					<Text style={styles.text}>Airdate: {formatDate(item.airdate)}</Text>
-					<Image source={{ uri: item?.image.medium }} style={styles.image} />
-					<Text style={styles.text}>{stripHtml(item.summary)}</Text>
-				</View>
+		<>
+			{error ? (
+				<Text style={globalStyles.errorText}>
+					There was an error, please try again.
+				</Text>
+			) : (
+				<FlatList
+					data={episodes}
+					style={styles.container}
+					keyExtractor={(item) => item.id.toString()}
+					renderItem={({ item }) => (
+						<View style={styles.card}>
+							<Text style={styles.episodeTitle}>
+								{item.season}x{item.number}: {item.name}
+							</Text>
+							<Text style={styles.text}>
+								Airdate: {formatDate(item.airdate)}
+							</Text>
+							<Image
+								source={{ uri: item?.image.medium }}
+								style={styles.image}
+							/>
+							<Text style={styles.text}>{stripHtml(item.summary)}</Text>
+						</View>
+					)}
+				/>
 			)}
-		/>
+		</>
 	);
 };
 

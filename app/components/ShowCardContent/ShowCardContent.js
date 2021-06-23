@@ -9,14 +9,14 @@ const ShowCardContent = ({ item, pressForShowDetails }) => {
 			style={globalStyles.cardContentContainer}
 		>
 			<View style={globalStyles.cardContent}>
-				{item.show.image && (
-					<Image
-						source={{
-							uri: item.show.image.medium,
-						}}
-						style={globalStyles.cardContentImage}
-					/>
-				)}
+				<Image
+					source={{
+						uri: item.show.image
+							? item.show.image?.medium
+							: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png",
+					}}
+					style={globalStyles.cardContentImage}
+				/>
 				<View style={globalStyles.cardTextContainer}>
 					<Text style={globalStyles.actorShowName}>{item.show.name}</Text>
 					{item.show?.genres.map((genre, index) => (
@@ -26,7 +26,7 @@ const ShowCardContent = ({ item, pressForShowDetails }) => {
 					))}
 					{item.show.rating.average && (
 						<Text style={globalStyles.cardContentText}>
-							Rating:{item.show.rating.average}
+							Rating: {item.show.rating.average}
 						</Text>
 					)}
 				</View>

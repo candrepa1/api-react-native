@@ -6,13 +6,9 @@ import Cast from "../app/views/cast/Cast";
 import Episodes from "../app/views/episodes/Episodes";
 import Crew from "../app/views/crew/Crew";
 import { HomeTabNavigator } from "./TabNavigator";
-import ActorsHome from "../app/views/actorsHome/ActorsHome";
 import ActorDetails from "../app/views/actorDetails/ActorDetails";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
-import useShowData from "../hooks/useShowData";
-import { useContext } from "react";
-import { ShowContext } from "../context/ShowContext";
-import { ActorContext } from "../context/ActorContext";
+import { useSelector } from "react-redux";
 
 const { Navigator, Screen } = createStackNavigator();
 
@@ -30,8 +26,8 @@ function getHeaderTitle(route) {
 }
 
 const HomeNavigator = () => {
-	const { showSelected } = useContext(ShowContext);
-	const { actorSelected } = useContext(ActorContext);
+	const showName = useSelector((state) => state.show.showSelected.name);
+	const actorName = useSelector((state) => state.actor.actorSelected.name);
 
 	return (
 		<Navigator
@@ -58,7 +54,8 @@ const HomeNavigator = () => {
 			<Screen
 				name="ShowDetails"
 				component={ShowDetails}
-				options={() => ({ headerTitle: showSelected.name })}
+				options={() => ({ headerTitle: "test" })}
+				options={() => ({ headerTitle: showName })}
 			/>
 			<Screen
 				name="Cast"
@@ -79,7 +76,7 @@ const HomeNavigator = () => {
 			<Screen
 				name="ActorDetails"
 				component={ActorDetails}
-				options={() => ({ headerTitle: actorSelected.name })}
+				options={() => ({ headerTitle: actorName })}
 			/>
 		</Navigator>
 	);

@@ -1,23 +1,43 @@
-import React, { useContext } from "react";
-import { SafeAreaView } from "react-native";
+import React from "react";
+import { SafeAreaView, Text, ActivityIndicator } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 
 import Form from "../../components/Form/Form";
-import { ShowContext } from "../../../context/ShowContext";
 import ShowCard from "../../components/ShowCard/ShowCard";
 import globalStyles from "../../../styles/globalStyles";
+import {
+	fetchPreviousEpisode,
+	showSelected,
+} from "../../../redux/actions/showActions";
 
 const ShowHome = ({ navigation }) => {
-	const { setShowSelected } = useContext(ShowContext);
+	const dispatch = useDispatch();
+	const error = useSelector((state) => state.show.show.error);
+	const loading = useSelector((state) => state.show.show.loading);
 
 	const pressForShowDetails = (show) => {
-		setShowSelected(show);
+		dispatch(showSelected(show));
+		dispatch(fetchPreviousEpisode(show._links.previousepisode.href));
 		navigation.navigate("ShowDetails");
 	};
 
 	return (
 		<SafeAreaView style={globalStyles.container}>
 			<Form name="show" />
-			<ShowCard pressForShowDetails={pressForShowDetails} />
+			{loading ? (
+				<ActivityIndicator
+					size="large"
+					color="tomato"
+					style={globalStyles.spinner}
+				/>
+			) : null}
+			{error ? (
+				<Text style={globalStyles.errorText}>
+					There was an error, please try again.
+				</Text>
+			) : (
+				<ShowCard pressForShowDetails={pressForShowDetails} />
+			)}
 		</SafeAreaView>
 	);
 };

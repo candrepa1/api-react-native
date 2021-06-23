@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import {
 	Text,
 	StyleSheet,
@@ -11,13 +11,28 @@ import PreviousEpisode from "../../components/PreviousEpisode/PreviousEpisode";
 import ShowInfoCard from "../../components/ShowInfoCard/ShowInfoCard";
 import AddToFavoritesButton from "../../components/AddToFavoritesButton/AddToFavoritesButton";
 import FlatButton from "../../components/FlatButton/FlatButton";
-import { ShowContext } from "../../../context/ShowContext";
 import globalStyles from "../../../styles/globalStyles";
 import useUtilFunctions from "../../../hooks/useUtilFunctions";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import {
+	fetchPreviousEpisode,
+	fetchShowCast,
+	fetchShowCrew,
+	fetchShowEpisodes,
+} from "../../../redux/actions/showActions";
 
 const ShowDetails = ({ navigation }) => {
-	const { showSelected } = useContext(ShowContext);
+	const dispatch = useDispatch();
+	const showSelected = useSelector((state) => state.show.showSelected);
 	const { stripHtml } = useUtilFunctions();
+
+	useEffect(() => {
+		dispatch(fetchPreviousEpisode(showSelected._links.previousepisode.href));
+		dispatch(fetchShowCast(showSelected.id));
+		dispatch(fetchShowCrew(showSelected.id));
+		dispatch(fetchShowEpisodes(showSelected.id));
+	}, []);
 
 	return (
 		<SafeAreaView style={globalStyles.container}>
@@ -25,7 +40,11 @@ const ShowDetails = ({ navigation }) => {
 				<View style={styles.imageAndButtonsContainer}>
 					<Image
 						style={styles.image}
-						source={{ uri: showSelected.image.medium }}
+						source={{
+							uri: showSelected.image
+								? showSelected.image?.medium
+								: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png",
+						}}
 					/>
 					<View style={styles.buttonsContainer}>
 						<AddToFavoritesButton item={showSelected} />

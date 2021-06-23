@@ -1,15 +1,14 @@
-import React, { useContext } from "react";
+import React from "react";
 import { FlatList } from "react-native";
-import { ShowContext } from "../../../context/ShowContext";
-import globalStyles from "../../../styles/globalStyles";
+import { useSelector } from "react-redux";
 import ShowCardContent from "../ShowCardContent/ShowCardContent";
 
 const ShowCard = ({ pressForShowDetails }) => {
-	const { showResults } = useContext(ShowContext);
+	const shows = useSelector((state) => state.show.show.data);
 
 	return (
 		<FlatList
-			data={showResults}
+			data={shows}
 			keyExtractor={(item) => item.show.id.toString()}
 			renderItem={({ item }) => (
 				<ShowCardContent

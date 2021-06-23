@@ -1,23 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Text, View, StyleSheet } from "react-native";
-import { ActorContext } from "../../../context/ActorContext";
+import { useSelector } from "react-redux";
+import useUtilFunctions from "../../../hooks/useUtilFunctions";
 
 const PersonInfo = () => {
-	const { actorSelected } = useContext(ActorContext);
-
-	const calculateAge = (birthdate) => {
-		const currentDate = new Date();
-		const birthDate = new Date(birthdate);
-		let age = currentDate.getFullYear() - birthDate.getFullYear();
-		const month = currentDate.getMonth() - birthDate.getMonth();
-		if (
-			month < 0 ||
-			(month === 0 && currentDate.getDate() < birthDate.getDate())
-		) {
-			age--;
-		}
-		return age;
-	};
+	const actorSelected = useSelector((state) => state.actor.actorSelected);
+	const { calculateAge } = useUtilFunctions();
 
 	return (
 		<View style={styles.card}>

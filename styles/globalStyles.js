@@ -79,6 +79,20 @@ const globalStyles = StyleSheet.create({
 		color: "white",
 		fontSize: 17,
 	},
+
+	// error messages
+	errorText: {
+		color: "red",
+		marginVertical: 15,
+		fontSize: 25,
+		fontWeight: "bold",
+		textAlign: "center",
+	},
+
+	// loading spinner
+	spinner: {
+		marginTop: 20,
+	},
 });
 
 export default globalStyles;

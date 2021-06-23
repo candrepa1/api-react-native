@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useContext } from "react";
+import React, { useCallback, useState } from "react";
 import { TouchableOpacity, View, StyleSheet, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -8,13 +8,14 @@ import globalStyles from "../../../styles/globalStyles";
 const AddToFavoritesButton = ({ item }) => {
 	const [favorites, setFavorites] = useState([]);
 	const [message, setMessage] = useState("");
+	const [errorMessage, setErrorMessage] = useState("");
 
 	const getValue = async () => {
 		try {
 			const jsonValue = await AsyncStorage.getItem("favorites");
 			jsonValue != null ? setFavorites(JSON.parse(jsonValue)) : [];
 		} catch (e) {
-			console.log(e);
+			setErrorMessage("Error getting favorites");
 		}
 	};
 
@@ -35,7 +36,7 @@ const AddToFavoritesButton = ({ item }) => {
 			const jsonValue = JSON.stringify(newFavorites);
 			await AsyncStorage.setItem("favorites", jsonValue);
 		} catch (e) {
-			console.log(e);
+			setErrorMessage("Error adding item");
 		}
 	};
 
@@ -45,7 +46,7 @@ const AddToFavoritesButton = ({ item }) => {
 			const jsonValue = JSON.stringify(newFavorites);
 			await AsyncStorage.setItem("favorites", jsonValue);
 		} catch (e) {
-			console.log(e);
+			setErrorMessage("Error removing item");
 		}
 	};
 
@@ -58,23 +59,28 @@ const AddToFavoritesButton = ({ item }) => {
 	);
 
 	return (
-		<TouchableOpacity
-			onPress={
-				message === "Saved"
-					? () => removeFromFavorites(item)
-					: () => addToFavorites(item)
-			}
-			style={globalStyles.buttonContainer}
-		>
-			<View style={styles.button}>
-				<Ionicons
-					name={message === "Saved" ? "ios-heart" : "ios-heart-outline"}
-					size={24}
-					color="white"
-				/>
-				<Text style={styles.text}>{message}</Text>
-			</View>
-		</TouchableOpacity>
+		<>
+			<TouchableOpacity
+				onPress={
+					message === "Saved"
+						? () => removeFromFavorites(item)
+						: () => addToFavorites(item)
+				}
+				style={globalStyles.buttonContainer}
+			>
+				<View style={styles.button}>
+					<Ionicons
+						name={message === "Saved" ? "ios-heart" : "ios-heart-outline"}
+						size={24}
+						color="white"
+					/>
+					<Text style={styles.text}>{message}</Text>
+				</View>
+			</TouchableOpacity>
+			{errorMessage ? (
+				<Text style={styles.errorText}>{errorMessage}</Text>
+			) : null}
+		</>
 	);
 };
 
@@ -92,6 +98,12 @@ const styles = StyleSheet.create({
 		color: "white",
 		fontSize: 17,
 		textAlign: "center",
+		fontWeight: "bold",
+	},
+	errorText: {
+		color: "red",
+		marginTop: 10,
+		fontSize: 15,
 		fontWeight: "bold",
 	},
 });

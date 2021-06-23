@@ -1,14 +1,13 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { ShowContext } from "../../../context/ShowContext";
-import { ActorContext } from "../../../context/ActorContext";
+import { useDispatch } from "react-redux";
+import { fetchShowData } from "../../../redux/actions/showActions";
+import { fetchActorData } from "../../../redux/actions/actorActions";
 
 const Form = ({ name }) => {
 	const [input, setInput] = useState("");
-
-	const { fetchShowData } = useContext(ShowContext);
-	const { fetchActorData } = useContext(ActorContext);
+	const dispatch = useDispatch();
 
 	return (
 		<>
@@ -28,7 +27,9 @@ const Form = ({ name }) => {
 							value={input}
 							onChangeText={setInput}
 							onSubmitEditing={() =>
-								name === "show" ? fetchShowData(input) : fetchActorData(input)
+								name === "show"
+									? dispatch(fetchShowData(input))
+									: dispatch(fetchActorData(input))
 							}
 						/>
 					</View>

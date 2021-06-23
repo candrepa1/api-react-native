@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Text, StyleSheet, View, Linking } from "react-native";
-import { ShowContext } from "../../../context/ShowContext";
+import { useSelector } from "react-redux";
 
-const ShowInfoCard = ({ info }) => {
-	const { showSelected } = useContext(ShowContext);
+const ShowInfoCard = () => {
+	const showSelected = useSelector((state) => state.show.showSelected);
 
 	return (
 		<View style={styles.container}>

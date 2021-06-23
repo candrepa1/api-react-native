@@ -11,16 +11,18 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 
 import RemoveButton from "../../components/RemoveButton/RemoveButton";
+import globalStyles from "../../../styles/globalStyles";
 
 const Favorites = () => {
 	const [favorites, setFavorites] = useState([]);
+	const [errorMessage, setErrorMessage] = useState("");
 
 	const getValue = async () => {
 		try {
 			const jsonValue = await AsyncStorage.getItem("favorites");
 			jsonValue != null ? setFavorites(JSON.parse(jsonValue)) : null;
 		} catch (e) {
-			console.log(e);
+			setErrorMessage("Error getting favorites");
 		}
 	};
 
@@ -30,7 +32,7 @@ const Favorites = () => {
 			const jsonValue = JSON.stringify(newFavorites);
 			await AsyncStorage.setItem("favorites", jsonValue);
 		} catch (e) {
-			console.log(e);
+			setErrorMessage("Error removing item");
 		}
 	};
 
@@ -45,6 +47,9 @@ const Favorites = () => {
 
 	return (
 		<SafeAreaView style={styles.container}>
+			{errorMessage ? (
+				<Text style={globalStyles.errorText}>{errorMessage}</Text>
+			) : null}
 			<FlatList
 				data={favorites}
 				numColumns={2}

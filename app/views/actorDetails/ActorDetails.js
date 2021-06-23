@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect } from "react";
 import {
 	Text,
 	Image,
@@ -9,36 +9,20 @@ import {
 	ScrollView,
 	LogBox,
 } from "react-native";
-import axios from "axios";
-
+import { useSelector } from "react-redux";
 import PersonInfo from "../../components/PersonInfo/PersonInfo";
 import AddToFavoritesButton from "../../components/AddToFavoritesButton/AddToFavoritesButton";
-import { ActorContext } from "../../../context/ActorContext";
 import globalStyles from "../../../styles/globalStyles";
 
 const ActorDetails = () => {
-	const [castFeatures, setCastFeatures] = useState([]);
-	const [crewFeatures, setCrewFeatures] = useState([]);
-
-	const { actorSelected } = useContext(ActorContext);
-
-	const fetchCastFeatureData = async (actorId) => {
-		const { data } = await axios(
-			`http://api.tvmaze.com/people/${actorId}/castcredits?embed=show`
-		);
-		setCastFeatures(data);
-	};
-
-	const fetchCrewFeatureData = async (actorId) => {
-		const { data } = await axios(
-			`http://api.tvmaze.com/people/${actorId}/crewcredits?embed=show`
-		);
-		setCrewFeatures(data);
-	};
+	const state = useSelector((state) => state.actor);
+	const actorSelected = useSelector((state) => state.actor.actorSelected);
+	const castFeatures = useSelector((state) => state.actor.castCredits.data);
+	const crewFeatures = useSelector((state) => state.actor.crewCredits.data);
+	const castError = useSelector((state) => state.actor.castCredits.error);
+	const crewError = useSelector((state) => state.actor.crewCredits.error);
 
 	useEffect(() => {
-		fetchCastFeatureData(actorSelected.id);
-		fetchCrewFeatureData(actorSelected.id);
 		LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 	}, []);
 
@@ -47,7 +31,9 @@ const ActorDetails = () => {
 			<ScrollView>
 				<Image
 					source={{
-						uri: actorSelected.image?.medium,
+						uri: actorSelected.image
+							? actorSelected.image?.medium
+							: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png",
 					}}
 					style={styles.image}
 				/>
@@ -55,7 +41,11 @@ const ActorDetails = () => {
 					<PersonInfo />
 					<AddToFavoritesButton item={actorSelected} />
 				</View>
-				{crewFeatures.length > 0 && (
+				{crewError ? (
+					<Text style={globalStyles.errorText}>
+						There was an error, please try again.
+					</Text>
+				) : crewFeatures?.length ? (
 					<View style={styles.crewFeatureContainer}>
 						<Text style={styles.title}>Crew Features</Text>
 						<FlatList
@@ -71,31 +61,43 @@ const ActorDetails = () => {
 							)}
 						/>
 					</View>
-				)}
+				) : null}
 
-				<Text style={styles.title}>Known For</Text>
-				<View>
-					<FlatList
-						data={castFeatures}
-						key={"_"}
-						numColumns={2}
-						keyExtractor={(item) => item._embedded.show.id.toString()}
-						renderItem={({ item }) => {
-							if (item._embedded.show.image) {
-								return (
-									<View style={styles.castFeature}>
-										<Image
-											source={{
-												uri: item._embedded.show.image?.medium,
-											}}
-											style={styles.castImage}
-										/>
-									</View>
-								);
-							}
-						}}
-					/>
-				</View>
+				{castError ? (
+					<Text style={globalStyles.errorText}>
+						There was an error, please try again.
+					</Text>
+				) : (
+					<>
+						{castFeatures?.length ? (
+							<>
+								<Text style={styles.title}>Known For</Text>
+								<View>
+									<FlatList
+										data={castFeatures}
+										key={"_"}
+										numColumns={2}
+										keyExtractor={(item) => item._embedded.show.id.toString()}
+										renderItem={({ item }) => {
+											if (item._embedded.show.image) {
+												return (
+													<View style={styles.castFeature}>
+														<Image
+															source={{
+																uri: item._embedded.show.image?.medium,
+															}}
+															style={styles.castImage}
+														/>
+													</View>
+												);
+											}
+										}}
+									/>
+								</View>
+							</>
+						) : null}
+					</>
+				)}
 			</ScrollView>
 		</SafeAreaView>
 	);

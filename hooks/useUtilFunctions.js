@@ -7,6 +7,20 @@ const useUtilFunctions = () => {
 		}
 	};
 
+	const calculateAge = (birthdate) => {
+		const currentDate = new Date();
+		const birthDate = new Date(birthdate);
+		let age = currentDate.getFullYear() - birthDate.getFullYear();
+		const month = currentDate.getMonth() - birthDate.getMonth();
+		if (
+			month < 0 ||
+			(month === 0 && currentDate.getDate() < birthDate.getDate())
+		) {
+			age--;
+		}
+		return age;
+	};
+
 	const formatDate = (date) => {
 		const months = [
 			"Jan",
@@ -31,7 +45,7 @@ const useUtilFunctions = () => {
 		}
 	};
 
-	return { stripHtml, formatDate };
+	return { stripHtml, formatDate, calculateAge };
 };
 
 export default useUtilFunctions;
