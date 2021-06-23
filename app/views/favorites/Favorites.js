@@ -38,7 +38,6 @@ const Favorites = () => {
 
 	useFocusEffect(
 		useCallback(() => {
-			// Do something when the screen is focused
 			getValue();
 		}, [favorites])
 	);

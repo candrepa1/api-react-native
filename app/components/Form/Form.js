@@ -9,6 +9,13 @@ const Form = ({ name }) => {
 	const [input, setInput] = useState("");
 	const dispatch = useDispatch();
 
+	const submitPressingEnter = () =>
+		name === "show"
+			? dispatch(fetchShowData(input))
+			: dispatch(fetchActorData(input));
+
+	const deleteInput = () => setInput("");
+
 	return (
 		<>
 			<View style={styles.searchContainer}>
@@ -26,11 +33,7 @@ const Form = ({ name }) => {
 							placeholderTextColor="#ccc"
 							value={input}
 							onChangeText={setInput}
-							onSubmitEditing={() =>
-								name === "show"
-									? dispatch(fetchShowData(input))
-									: dispatch(fetchActorData(input))
-							}
+							onSubmitEditing={submitPressingEnter}
 						/>
 					</View>
 					{input.length > 0 && (
@@ -39,7 +42,7 @@ const Form = ({ name }) => {
 							size={24}
 							color="grey"
 							style={styles.clearAllIcon}
-							onPress={() => setInput("")}
+							onPress={deleteInput}
 						/>
 					)}
 				</View>

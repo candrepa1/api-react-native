@@ -52,7 +52,6 @@ const AddToFavoritesButton = ({ item }) => {
 
 	useFocusEffect(
 		useCallback(() => {
-			// Do something when the screen is focused
 			getValue();
 			checkIfSaved(item);
 		}, [favorites])
